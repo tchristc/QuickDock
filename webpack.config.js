@@ -32,7 +32,6 @@ module.exports = {
         }]
       }
     ]
-  }
+  },
+  watch:true
 };
-
-module.exports = config;

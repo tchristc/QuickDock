@@ -24,11 +24,10 @@ module.exports = {
   },
   //plugins: [new UglifyJSPlugin()],
   entry: './src/index.js',
-
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist')
   },
-
-  mode: 'development'
+  mode: 'development',
+  watch: true
 }
