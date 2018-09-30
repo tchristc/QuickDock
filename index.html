@@ -2,8 +2,8 @@
 <html>
 <head>
         <script src="scripts/vue/vue.min.js"></script>
-    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
-        crossorigin="anonymous"></script> -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+        crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -62,14 +62,26 @@
             $("#container1").css("grid-template-columns", w + "% 5px auto");
         }
         var x_start = 0;
-        var
-
-            $(function () {
-                $("#qd_vertical_splitter").mousedown(function () {
-                    var windowWidth = $(window).width();
-                    dra
-                });
+        var x_end = 0;
+        var dragging = false;
+        var windowWidth = $(window).width();
+        $(function () {
+            $(".qd_vertical_splitter").mousedown(function (e) {
+                x_start = e.clientX;
+                dragging = true;
             });
+
+            $(window).mousemove(function (e) {
+                if(dragging){
+                    $("#container1").css("grid-template-columns", e.clientX + "px 5px auto");
+                }
+            });
+            
+            $(window).mouseup(function (e) {
+                x_end = e.clientX;
+                dragging = false;
+            });
+        });
     </script>
 </body>
 
