@@ -1,43 +1,220 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-        <script src="scripts/vue/vue.min.js"></script>
+    <script src="scripts/vue/vue.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
         crossorigin="anonymous"></script>
+    <style>
+        .qd_container {
+                display: grid;
+                grid-template-rows: minmax(100px, auto) 5px minmax(100px, auto);
+                grid-template-columns: auto 5px auto;
+                grid-gap: 0;
+                height: 50vh;
+            }
+    
+            .qd_column {
+                /* border: solid black 1px; */
+                /* background: #e1e1e1; */
+                border: 1px solid #cccccc;
+            }
+    
+            .qd_vertical_splitter {
+                cursor: ew-resize;
+            }
+    
+            .qd_horizontal_splitter {
+                cursor: ns-resize;
+                /* grid-column-start: 1; */
+                grid-column-end: span 3;
+            }
+
+            .qd_header {
+                overflow: visible;
+                position: relative;
+                z-index: 1;
+                height: 20px;
+            }
+
+            .qd_header ul {
+                margin: 0;
+                padding: 0;
+                list-style-type: none;
+            }
+
+            .qd_header .qd_tabs {
+                position: absolute;
+            }
+
+            .qd_header .qd_tab {
+                position: absolute;
+            }
+
+            .qd_header [class^=qd_] {
+                box-sizing: content-box !important;
+            }
+
+            .qd_header .qd_tab {
+                cursor: pointer;
+                float: left;
+                height: 14px;
+                margin-top: 1px;
+                padding: 0 10px 5px;
+                padding-right: 25px;
+                position: relative;
+
+                font-family: Arial,sans-serif;
+                font-size: 12px;
+                color: #888888;
+                background: #fafafa;
+                margin-right: 2px;
+                padding-bottom: 4px;
+                border: 1px solid #cccccc;
+                border-bottom: none;
+            }
+
+            .qd_header .qd_tab .qd_title {
+                display: inline-block;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .qd_header .qd_tab .qd_close_tab {
+                width: 11px;
+                height: 11px;
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAYAAADEUlfTAAAAIklEQVR4nGNgYGD4z4Ad/Mdg4ODDBXCZRFgCp5EEHQMXBwAQAgz0SVCcggAAAABJRU5ErkJggg==);
+                background-position: center center;
+                background-repeat: no-repeat;
+                right: 6px;
+                top: 4px;
+                opacity: 1;
+                position: absolute;
+                text-align: center;
+            }
+
+            .qd_header .qd_tab i.qd_left {
+                top: 0;
+                left: -2px;
+            }
+
+            .qd_header .qd_tab i.qd_right {
+                top: 0;
+                right: -2px;
+            }
+
+            .qd_active{
+                background: #e1e1e1;
+                color: #777777;
+            }
+
+            .qd_header .qd_tab.qd_active {
+                border-bottom: none;
+                box-shadow: 2px -2px 2px -2px rgba(0,0,0,0.2);
+                padding-bottom: 5px;
+            }
+
+            .qd_header .qd_controls {
+                position: absolute;
+                right: 3px;
+            }
+
+            .qd_header .qd_controls>li {
+                cursor: pointer;
+                float: left;
+                width: 18px;
+                height: 18px;
+                text-align: center;
+            }
+
+            .qd_controls>li {
+                position: relative;
+                background-position: center center;
+                background-repeat: no-repeat;
+                opacity: .4;
+                transition: opacity 300ms ease;
+            }
+
+            .qd_header .qd_controls {
+                position: absolute;
+                right: 3px;
+            }
+
+            .qd_controls .qd_popout {
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAANUlEQVR4nI2QMQoAMAwCz5L/f9mOzZIaN0E9UDyZhaaQz6atgBHgambEJ5wBKoS0WaIvfT+6K2MIECN19MAAAAAASUVORK5CYII=);
+            }
+            
+            .qd_controls .qd_maximise {
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAIklEQVR4nGNkYGD4z0AAMBFSAAOETPpPlEmDUREjAxHhBABPvAQLFv3qngAAAABJRU5ErkJggg==);
+            }
+
+            .qd_controls .qd_close {
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKUlEQVR4nGNgYGD4z4Af/Mdg4FKASwCnDf8JKSBoAtEmEXQTQd8RDCcA6+4Q8OvIgasAAAAASUVORK5CYII=);
+            }
+
+        </style>
+    <script type="text/x-template" id="plugin-template">
+
+    </script>
+    <script>
+        var appData = {
+
+        };
+
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                appData: appData
+            },
+            created: function () {},
+            mounted: function () {},
+            methods: {
+                getPos: function (evt) {
+                    return this.appData.touch ? this.getTouchPos(evt) : this.getMousePos(evt);
+                },
+                getMousePos: function (mouseEvent) {
+                    this.appData.point.x = (mouseEvent.clientX);
+                    this.appData.point.y = (mouseEvent.clientY);
+                },
+                getTouchPos: function (touchEvent) {
+                    this.appData.point.x = (touchEvent.touches[0].clientX);
+                    this.appData.point.y = (touchEvent.touches[0].clientY);
+                }
+            },
+            computed: {
+                pluginsOrdered: function () {
+                    return pluginsOrdered(this.appData.plugins);
+                }
+            }
+        });
+    </script>
 </head>
 
 <body>
-    <style>
-        .qd_container {
-            display: grid;
-            grid-template-rows: minmax(100px, auto) 5px minmax(100px, auto);
-            grid-template-columns: 10% 5px auto;
-            grid-gap: 0;
-            height: 50vh;
-        }
 
-        .qd_column {
-            border: solid black 1px;
-        }
+    <div id="app" @mousedown.prevent="startMove" @touchstart.prevent="startMove">
+    </div>
 
-        .qd_vertical_splitter {
-            cursor: ew-resize;
-        }
-
-        .qd_horizontal_splitter {
-            cursor: ns-resize;
-            grid-column-start: 1;
-            grid-column-end: 4;
-        }
-
-        .qd_full_row {
-            grid-column-start: 1;
-            grid-column-end: 4;
-        }
-    </style>
     <div class="qd_container" id="container1">
-        <div class="qd_column">
-
+        <div class="qd_column" data-qd-column="1">
+            <div class="qd_header">
+                <ul class="qd_tabs">
+                    <li class="qd_tab qd_active" title="Component 1"><i class="qd_left"></i><span class="qd_title">Component
+                            1</span>
+                        <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
+                    </li>
+                    <li class="qd_tab" title="Component 2"><i class="qd_left"></i><span class="qd_title">Component 2</span>
+                        <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
+                    </li>
+                </ul>
+                <ul class="qd_controls">
+                    <li class="qd_tabdropdown" title="additional tabs" style="display: none;"></li>
+                    <li class="qd_popout" title="open in new window"></li>
+                    <li class="qd_maximise" title="maximise"></li>
+                    <li class="qd_close" title="close" style="display: list-item;"></li>
+                </ul>
+                <ul class="qd_tabdropdown_list" style="display: none;"></ul>
+            </div>
         </div>
         <div class="qd_vertical_splitter"></div>
         <div class="qd_column">
@@ -67,16 +244,17 @@
         var windowWidth = $(window).width();
         $(function () {
             $(".qd_vertical_splitter").mousedown(function (e) {
+                e.preventDefault();
                 x_start = e.clientX;
                 dragging = true;
             });
 
             $(window).mousemove(function (e) {
-                if(dragging){
+                if (dragging) {
                     $("#container1").css("grid-template-columns", e.clientX + "px 5px auto");
                 }
             });
-            
+
             $(window).mouseup(function (e) {
                 x_end = e.clientX;
                 dragging = false;
