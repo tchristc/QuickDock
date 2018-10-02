@@ -3,8 +3,8 @@
 
 <head>
     <script src="scripts/vue/vue.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
-        crossorigin="anonymous"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+        crossorigin="anonymous"></script> -->
     <style>
         .qd_container {
                 display: grid;
@@ -160,9 +160,76 @@
     <script type="text/x-template" id="plugin-template">
 
     </script>
+
+</head>
+
+<body>
+    <div id="app" @mousedown="dragStart" @touchstart="dragStart">
+        <div class="qd_container" id="container1" ref="container" :style="containerStyle">
+            <div class="qd_column" data-qd-column="1">
+                <div class="qd_header">
+                    <ul class="qd_tabs">
+                        <li class="qd_tab qd_active" title="Component 1"><i class="qd_left"></i><span class="qd_title">Component
+                                1</span>
+                            <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
+                        </li>
+                        <li class="qd_tab" title="Component 2"><i class="qd_left"></i><span class="qd_title">Component
+                                2</span>
+                            <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
+                        </li>
+                    </ul>
+                    <ul class="qd_controls">
+                        <li class="qd_tabdropdown" title="additional tabs" style="display: none;"></li>
+                        <li class="qd_popout" title="open in new window"></li>
+                        <li class="qd_maximise" title="maximise"></li>
+                        <li class="qd_close" title="close" style="display: list-item;"></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="qd_vertical_splitter"></div>
+            <div class="qd_column">
+
+            </div>
+            <div class="qd_horizontal_splitter"></div>
+            <div class="qd_column">
+
+            </div>
+            <div class="qd_vertical_splitter"></div>
+            <div class="qd_column">
+
+            </div>
+        </div>
+    </div>
     <script>
         var appData = {
-
+            drag_start: {
+                x: 0,
+                y: 0,
+                target: null
+            },
+            drag_current: {
+                x: 0,
+                y: 0,
+                target: null
+            },
+            drag_end: {
+                x: 0,
+                y: 0,
+                target: null
+            },
+            drag_map_events: {
+                touch: {
+                    move: "touchmove",
+                    stop: "touchend"
+                },
+                mouse: {
+                    move: "mousemove",
+                    stop: "mouseup"
+                }
+            },
+            drag_events: {},
+            dragging: false,
+            touch: false
         };
 
         var vm = new Vue({
@@ -173,68 +240,65 @@
             created: function () {},
             mounted: function () {},
             methods: {
-                getPos: function (evt) {
-                    return this.appData.touch ? this.getTouchPos(evt) : this.getMousePos(evt);
+                dragStart: function (evt) {
+                    console.log('start ')
+                    //var pluginIdIn = evt.target.getAttribute("data-pluginid");
+                    appData.touch = (evt.type === "touchstart");
+                    if (!appData.touch && evt.button !== 0) return;
+                    appData.drag_events = appData.touch ? appData.drag_map_events.touch : appData.drag_map_events.mouse;
+                    this.$el.addEventListener(appData.drag_events.move, this.dragMove)
+                    this.$el.addEventListener(appData.drag_events.stop, this.dragEnd)
+
+                    appData.dragging = true;
+
+                    this.getPos(evt, () => {
+                        this.appData.drag_start = this.appData.drag_current
+                    })
+                },
+                dragMove: function (evt) {
+                    console.log('move ')
+                    //this.$refs.container.css("grid-template-columns", evt.clientX + "px 5px auto");
+                    this.getPos(evt, () => {})
+                },
+                dragEnd: function (evt) {
+                    console.log('stop')
+                    appData.dragging = false;
+                    this.getPos(evt, () => {
+                        this.appData.drag_end = this.appData.drag_current
+                    })
+
+                    this.$el.removeEventListener(appData.drag_events.move, this.dragMove)
+                    this.$el.removeEventListener(appData.drag_events.stop, this.dragEnd)
+                },
+                getPos: function (evt, callback) {
+                    appData.drag_current.target = evt.target;
+                    this.appData.touch ? this.getTouchPos(evt) : this.getMousePos(evt);
+                    callback();
                 },
                 getMousePos: function (mouseEvent) {
-                    this.appData.point.x = (mouseEvent.clientX);
-                    this.appData.point.y = (mouseEvent.clientY);
+                    this.appData.drag_current.x = (mouseEvent.clientX);
+                    this.appData.drag_current.y = (mouseEvent.clientY);
                 },
                 getTouchPos: function (touchEvent) {
-                    this.appData.point.x = (touchEvent.touches[0].clientX);
-                    this.appData.point.y = (touchEvent.touches[0].clientY);
+                    this.appData.drag_current.x = (touchEvent.touches[0].clientX);
+                    this.appData.drag_current.y = (touchEvent.touches[0].clientY);
                 }
             },
             computed: {
-                pluginsOrdered: function () {
-                    return pluginsOrdered(this.appData.plugins);
+                containerStyle: function(){
+                    return { "grid-template-columns": `${appData.drag_current.x}px 5px auto`}
                 }
+            },
+            watch: {
+                containerStyle: {
+                    handler: function (val, oldVal) {}
+                },
+                deep: true
             }
         });
     </script>
-</head>
-
-<body>
-
-    <div id="app" @mousedown.prevent="startMove" @touchstart.prevent="startMove">
-    </div>
-
-    <div class="qd_container" id="container1">
-        <div class="qd_column" data-qd-column="1">
-            <div class="qd_header">
-                <ul class="qd_tabs">
-                    <li class="qd_tab qd_active" title="Component 1"><i class="qd_left"></i><span class="qd_title">Component
-                            1</span>
-                        <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
-                    </li>
-                    <li class="qd_tab" title="Component 2"><i class="qd_left"></i><span class="qd_title">Component 2</span>
-                        <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
-                    </li>
-                </ul>
-                <ul class="qd_controls">
-                    <li class="qd_tabdropdown" title="additional tabs" style="display: none;"></li>
-                    <li class="qd_popout" title="open in new window"></li>
-                    <li class="qd_maximise" title="maximise"></li>
-                    <li class="qd_close" title="close" style="display: list-item;"></li>
-                </ul>
-                <ul class="qd_tabdropdown_list" style="display: none;"></ul>
-            </div>
-        </div>
-        <div class="qd_vertical_splitter"></div>
-        <div class="qd_column">
-
-        </div>
-        <div class="qd_horizontal_splitter"></div>
-        <div class="qd_column">
-
-        </div>
-        <div class="qd_vertical_splitter"></div>
-        <div class="qd_column">
-
-        </div>
-    </div>
-    <button onclick="changesize()">resize</button>
-
+    <!-- <button onclick="changesize()">resize</button> -->
+    <!-- 
     <script>
         var w = 0;
 
@@ -264,7 +328,7 @@
                 dragging = false;
             });
         });
-    </script>
+    </script> -->
 </body>
 
 </html>
