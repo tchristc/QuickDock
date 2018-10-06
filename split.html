@@ -6,36 +6,42 @@
     <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
         crossorigin="anonymous"></script> -->
     <style>
-        .qd_container {
+            .qd_container {
                 display: grid;
-                grid-template-rows: minmax(100px, auto) 5px minmax(100px, auto);
-                grid-template-columns: auto 5px auto;
+                grid-template-rows: auto;
+                grid-template-columns: auto;
                 grid-gap: 0;
                 height: 50vh;
             }
-    
+            
+            .qd_container .row {
+                grid-template-rows: auto 5px auto;
+                grid-template-columns: auto;
+            }
+
+            .qd_container .column {
+                grid-template-rows: auto;
+                grid-template-columns: auto 5px auto;
+            }
+
             .qd_column {
                 /* border: solid black 1px; */
                 /* background: #e1e1e1; */
                 border: 1px solid #cccccc;
             }
     
+            .qd_splitter:hover{
+                background:#e1e1e1;
+            }
+
             .qd_vertical_splitter {
                 cursor: ew-resize;
             }
     
-            .qd_vertical_splitter:hover {
-                background:#e1e1e1;
-            }
-
             .qd_horizontal_splitter {
                 cursor: ns-resize;
                 /* grid-column-start: 1; */
-                grid-column-end: span 3;
-            }
-
-            .qd_horizontal_splitter:hover{
-                background:#e1e1e1;
+                /* grid-column-end: span 3; */
             }
 
             .qd_header {
@@ -165,48 +171,70 @@
             }
 
         </style>
-    <script type="text/x-template" id="plugin-template">
-
-    </script>
-
+        <script type="text/x-template" id="container-template">
+            <div class="qd_container" :class="containerClass" ref="container"  :style="{ 'grid-template-columns': gtc, 'grid-template-rows': gtr }">
+                <div class="qd_column" data-qd-column="1">
+                        <div class="qd_header">
+                            <ul class="qd_tabs">
+                                <li class="qd_tab qd_active" title="Component 1">
+                                    <i class="qd_left"></i><span class="qd_title">
+                                        Component
+                                        1
+                                    </span>
+                                    <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
+                                </li>
+                                <li class="qd_tab" title="Component 2">
+                                    <i class="qd_left"></i><span class="qd_title">
+                                        Component
+                                        2
+                                    </span>
+                                    <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
+                                </li>
+                            </ul>
+                            <ul class="qd_controls">
+                                <li class="qd_tabdropdown" title="additional tabs" style="display: none;"></li>
+                                <li class="qd_popout" title="open in new window"></li>
+                                <li class="qd_maximise" title="maximise"></li>
+                                <li class="qd_close" title="close" style="display: list-item;"></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="qd_splitter" :class="splitterClass" data-drag-itemtype="vertical_splitter" data-drag-index="0"></div>
+                    <div class="qd_column" data-qd-column="1">
+                        <div class="qd_header">
+                            <ul class="qd_tabs">
+                                <li class="qd_tab qd_active" title="Component 1">
+                                    <i class="qd_left"></i><span class="qd_title">
+                                        Component
+                                        1
+                                    </span>
+                                    <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
+                                </li>
+                                <li class="qd_tab" title="Component 2">
+                                    <i class="qd_left"></i><span class="qd_title">
+                                        Component
+                                        2
+                                    </span>
+                                    <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
+                                </li>
+                            </ul>
+                            <ul class="qd_controls">
+                                <li class="qd_tabdropdown" title="additional tabs" style="display: none;"></li>
+                                <li class="qd_popout" title="open in new window"></li>
+                                <li class="qd_maximise" title="maximise"></li>
+                                <li class="qd_close" title="close" style="display: list-item;"></li>
+                            </ul>
+                        </div>
+                    </div>
+            </div>
+        </script>
 </head>
 
 <body>
     <div id="app" @mousedown="dragStart" @touchstart="dragStart">
-        <div class="qd_container" id="container1" ref="container"  :style="{ 'grid-template-columns': gtc, 'grid-template-rows': gtr }">
-            <div class="qd_column" data-qd-column="1">
-                <div class="qd_header">
-                    <ul class="qd_tabs">
-                        <li class="qd_tab qd_active" title="Component 1"><i class="qd_left"></i><span class="qd_title">Component
-                                1</span>
-                            <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
-                        </li>
-                        <li class="qd_tab" title="Component 2"><i class="qd_left"></i><span class="qd_title">Component
-                                2</span>
-                            <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
-                        </li>
-                    </ul>
-                    <ul class="qd_controls">
-                        <li class="qd_tabdropdown" title="additional tabs" style="display: none;"></li>
-                        <li class="qd_popout" title="open in new window"></li>
-                        <li class="qd_maximise" title="maximise"></li>
-                        <li class="qd_close" title="close" style="display: list-item;"></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="qd_vertical_splitter" data-drag-itemtype="vertical_splitter" data-drag-index="0"></div>
-            <div class="qd_column">
+        <qd_container v-for="(container, index) in appData.containers" :container="container" :id="'container-' + container.id" >
 
-            </div>
-            <div class="qd_horizontal_splitter" data-drag-itemtype="horizontal_splitter" data-drag-index="0"></div>
-            <div class="qd_column">
-
-            </div>
-            <div class="qd_vertical_splitter" data-drag-itemtype="vertical_splitter" data-drag-index="0"></div>
-            <div class="qd_column">
-
-            </div>
-        </div>
+        </qd_container>
     </div>
     <script>
         var appData = {
@@ -242,8 +270,35 @@
             touch: false,
             vertical_splitter: [400],
             horizontal_splitter: [250],
-            c: 5
+            containers: [{
+                id: 0,
+                split: 300,
+                orientation: "column"
+            }]
         };
+
+        Vue.component('qd_container', {
+            props: ['container'],
+            template: '#container-template',
+            created: function () {},
+            mounted: function () {},
+            updated: function () {},
+            methods: {},
+            computed: {
+                gtc: function () {
+                    return this.container.orientation === "column" ? this.container.split + "px 5px auto" : "auto";
+                },
+                gtr: function () {
+                    return this.container.orientation === "column" ? "auto" : this.container.split + "px 5px auto";
+                },
+                containerClass: function(){
+                    return this.container.orientation;
+                },
+                splitterClass: function(){
+                    return this.container.orientation === "column" ? "qd_vertical_splitter" : "qd_horizontal_splitter";
+                },
+            }
+        });
 
         var vm = new Vue({
             el: '#app',
@@ -258,10 +313,11 @@
                     //var pluginIdIn = evt.target.getAttribute("data-pluginid");
                     appData.touch = (evt.type === "touchstart");
                     if (!appData.touch && evt.button !== 0) return;
-                    appData.drag_events = appData.touch ? appData.drag_map_events.touch : appData.drag_map_events.mouse;
+                    appData.drag_events = appData.touch ? appData.drag_map_events.touch : appData.drag_map_events
+                        .mouse;
                     appData.drag_itemtype = evt.target.getAttribute("data-drag-itemtype");
                     appData.drag_index = evt.target.getAttribute("data-drag-index");
-                    
+
                     this.$el.addEventListener(appData.drag_events.move, this.dragMove)
                     this.$el.addEventListener(appData.drag_events.stop, this.dragEnd)
 
@@ -273,11 +329,11 @@
                 dragMove: function (evt) {
                     this.getPos(evt);
 
-                    if(appData.drag_itemtype === "horizontal_splitter"){
-                        appData.horizontal_splitter.splice(appData.drag_index,1,appData.drag_current.y);
+                    if (appData.drag_itemtype === "horizontal_splitter") {
+                        appData.horizontal_splitter.splice(appData.drag_index, 1, appData.drag_current.y);
                     }
-                    if(appData.drag_itemtype === "vertical_splitter"){
-                        appData.vertical_splitter.splice(appData.drag_index,1,appData.drag_current.x);
+                    if (appData.drag_itemtype === "vertical_splitter") {
+                        appData.vertical_splitter.splice(appData.drag_index, 1, appData.drag_current.x);
                     }
                 },
                 dragEnd: function (evt) {
@@ -304,12 +360,7 @@
                 }
             },
             computed: {
-                gtc: function(){
-                    return appData.vertical_splitter.join("px 5px ") + "px 5px auto";
-                },
-                gtr: function(){
-                    return appData.horizontal_splitter.join("px 5px ") + "px 5px auto";
-                }
+
             },
             watch: {
                 // appData:{
@@ -323,4 +374,5 @@
         });
     </script>
 </body>
+
 </html>
