@@ -24,10 +24,18 @@
                 cursor: ew-resize;
             }
     
+            .qd_vertical_splitter:hover {
+                background:#e1e1e1;
+            }
+
             .qd_horizontal_splitter {
                 cursor: ns-resize;
                 /* grid-column-start: 1; */
                 grid-column-end: span 3;
+            }
+
+            .qd_horizontal_splitter:hover{
+                background:#e1e1e1;
             }
 
             .qd_header {
@@ -165,7 +173,7 @@
 
 <body>
     <div id="app" @mousedown="dragStart" @touchstart="dragStart">
-        <div class="qd_container" id="container1" ref="container" :style="containerStyle">
+        <div class="qd_container" id="container1" ref="container"  :style="{ 'grid-template-columns': gtc, 'grid-template-rows': gtr }">
             <div class="qd_column" data-qd-column="1">
                 <div class="qd_header">
                     <ul class="qd_tabs">
@@ -186,15 +194,15 @@
                     </ul>
                 </div>
             </div>
-            <div class="qd_vertical_splitter"></div>
+            <div class="qd_vertical_splitter" data-drag-itemtype="vertical_splitter" data-drag-index="0"></div>
             <div class="qd_column">
 
             </div>
-            <div class="qd_horizontal_splitter"></div>
+            <div class="qd_horizontal_splitter" data-drag-itemtype="horizontal_splitter" data-drag-index="0"></div>
             <div class="qd_column">
 
             </div>
-            <div class="qd_vertical_splitter"></div>
+            <div class="qd_vertical_splitter" data-drag-itemtype="vertical_splitter" data-drag-index="0"></div>
             <div class="qd_column">
 
             </div>
@@ -228,8 +236,13 @@
                 }
             },
             drag_events: {},
+            drag_itemtype: "",
+            drag_index: 0,
             dragging: false,
-            touch: false
+            touch: false,
+            vertical_splitter: [400],
+            horizontal_splitter: [250],
+            c: 5
         };
 
         var vm = new Vue({
@@ -241,39 +254,45 @@
             mounted: function () {},
             methods: {
                 dragStart: function (evt) {
-                    console.log('start ')
+                    //console.log('start ')
                     //var pluginIdIn = evt.target.getAttribute("data-pluginid");
                     appData.touch = (evt.type === "touchstart");
                     if (!appData.touch && evt.button !== 0) return;
                     appData.drag_events = appData.touch ? appData.drag_map_events.touch : appData.drag_map_events.mouse;
+                    appData.drag_itemtype = evt.target.getAttribute("data-drag-itemtype");
+                    appData.drag_index = evt.target.getAttribute("data-drag-index");
+                    
                     this.$el.addEventListener(appData.drag_events.move, this.dragMove)
                     this.$el.addEventListener(appData.drag_events.stop, this.dragEnd)
 
                     appData.dragging = true;
 
-                    this.getPos(evt, () => {
-                        this.appData.drag_start = this.appData.drag_current
-                    })
+                    this.getPos(evt);
+                    this.appData.drag_start = this.appData.drag_current;
                 },
                 dragMove: function (evt) {
-                    console.log('move ')
-                    //this.$refs.container.css("grid-template-columns", evt.clientX + "px 5px auto");
-                    this.getPos(evt, () => {})
+                    this.getPos(evt);
+
+                    if(appData.drag_itemtype === "horizontal_splitter"){
+                        appData.horizontal_splitter.splice(appData.drag_index,1,appData.drag_current.y);
+                    }
+                    if(appData.drag_itemtype === "vertical_splitter"){
+                        appData.vertical_splitter.splice(appData.drag_index,1,appData.drag_current.x);
+                    }
                 },
                 dragEnd: function (evt) {
-                    console.log('stop')
                     appData.dragging = false;
-                    this.getPos(evt, () => {
-                        this.appData.drag_end = this.appData.drag_current
-                    })
+                    appData.drag_itemtype = "";
+                    appData.drag_index = 0;
+                    this.getPos(evt);
 
                     this.$el.removeEventListener(appData.drag_events.move, this.dragMove)
                     this.$el.removeEventListener(appData.drag_events.stop, this.dragEnd)
                 },
-                getPos: function (evt, callback) {
+                getPos: function (evt) {
                     appData.drag_current.target = evt.target;
                     this.appData.touch ? this.getTouchPos(evt) : this.getMousePos(evt);
-                    callback();
+                    this.appData.drag_end = this.appData.drag_current
                 },
                 getMousePos: function (mouseEvent) {
                     this.appData.drag_current.x = (mouseEvent.clientX);
@@ -285,50 +304,23 @@
                 }
             },
             computed: {
-                containerStyle: function(){
-                    return { "grid-template-columns": `${appData.drag_current.x}px 5px auto`}
+                gtc: function(){
+                    return appData.vertical_splitter.join("px 5px ") + "px 5px auto";
+                },
+                gtr: function(){
+                    return appData.horizontal_splitter.join("px 5px ") + "px 5px auto";
                 }
             },
             watch: {
-                containerStyle: {
-                    handler: function (val, oldVal) {}
-                },
-                deep: true
+                // appData:{
+                //     handler: function (val, oldVal) {
+                //         this.$forceUpdate();
+                //         console.log('appData');
+                //     },
+                //     deep: true
+                // }
             }
         });
     </script>
-    <!-- <button onclick="changesize()">resize</button> -->
-    <!-- 
-    <script>
-        var w = 0;
-
-        function changesize() {
-            w += 10;
-            $("#container1").css("grid-template-columns", w + "% 5px auto");
-        }
-        var x_start = 0;
-        var x_end = 0;
-        var dragging = false;
-        var windowWidth = $(window).width();
-        $(function () {
-            $(".qd_vertical_splitter").mousedown(function (e) {
-                e.preventDefault();
-                x_start = e.clientX;
-                dragging = true;
-            });
-
-            $(window).mousemove(function (e) {
-                if (dragging) {
-                    $("#container1").css("grid-template-columns", e.clientX + "px 5px auto");
-                }
-            });
-
-            $(window).mouseup(function (e) {
-                x_end = e.clientX;
-                dragging = false;
-            });
-        });
-    </script> -->
 </body>
-
 </html>
