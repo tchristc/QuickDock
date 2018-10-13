@@ -148,7 +148,7 @@
         </style>
         <script type="text/x-template" id="tab-container-template">
             <div class="qd_container" ref="container" >
-                <div class="qd_container_contents">
+                <div class="qd_tab_container">
                     <div class="qd_header">
                         <ul class="qd_tabs">
                             <li v-for="(item, index) in items" class="qd_tab" :class="{'qd_active': item.active}" :data-tab-id="item.id" :id="'item-' + index" @click="tabClicked">
@@ -157,8 +157,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div v-for="(item, index) in items" class="qd_body" :class="{'qd_inactive': !item.active}" data-qd-column="1">
-                        {{item.name}}
+                    <div v-for="(item, index) in items" class="qd_body" :class="{'qd_inactive': !item.active}" data-qd-column="1" v-html="item.body">
                     </div>
                 </div>
             </div>
@@ -172,8 +171,8 @@
     <script>
         var appData = {
             items: [
-                {id:1,name:"Test 1",active:true},
-                {id:2,name:"Test 2",active:false}]
+                {id:1,name:"Test 1",active:true,body:"<div>test 1</div>"},
+                {id:2,name:"Test 2",active:false,body:"<div>test 2</div>"}]
         };
 
         Vue.component('qd_tab_container', {
