@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="scripts/vue/vue.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+        crossorigin="anonymous"></script> -->
+    <style>
+            .qd_header {
+                overflow: visible;
+                position: relative;
+                z-index: 1;
+                height: 20px;
+            }
+
+            .qd_header ul {
+                margin: 0;
+                padding: 0;
+                list-style-type: none;
+            }
+
+            .qd_header .qd_tabs {
+                position: absolute;
+            }
+
+            .qd_header .qd_tab {
+                position: absolute;
+            }
+
+            .qd_header [class^=qd_] {
+                box-sizing: content-box !important;
+            }
+
+            .qd_header .qd_tab {
+                font-family: Arial,sans-serif;
+                font-size: 12px;
+                color: #888888;
+                background: #fafafa;
+                margin-right: 2px;
+                padding-bottom: 4px;
+                border: 1px solid #cccccc;
+                border-bottom: none;
+            }
+            
+            .qd_header .qd_tab {
+                cursor: pointer;
+                float: left;
+                height: 14px;
+                margin-top: 1px;
+                padding: 0 10px 5px;
+                padding-right: 25px;
+                position: relative;
+            }
+
+            .qd_header .qd_tab .qd_title {
+                display: inline-block;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .qd_header .qd_tab .qd_close_tab {
+                width: 11px;
+                height: 11px;
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAYAAADEUlfTAAAAIklEQVR4nGNgYGD4z4Ad/Mdg4ODDBXCZRFgCp5EEHQMXBwAQAgz0SVCcggAAAABJRU5ErkJggg==);
+                background-position: center center;
+                background-repeat: no-repeat;
+                right: 6px;
+                top: 4px;
+                opacity: 1;
+                position: absolute;
+                text-align: center;
+            }
+
+            .qd_header .qd_tab i.qd_left {
+                top: 0;
+                left: -2px;
+            }
+
+            .qd_header .qd_tab i.qd_right {
+                top: 0;
+                right: -2px;
+            }
+
+           .qd_tab.qd_active{
+                background: #e1e1e1;
+                color: #777777;
+            }
+
+            .qd_header .qd_tab .qd_active {
+                border-bottom: none;
+                box-shadow: 2px -2px 2px -2px rgba(0,0,0,0.2);
+                padding-bottom: 5px;
+            }
+
+            .qd_header .qd_controls {
+                position: absolute;
+                right: 3px;
+            }
+
+            .qd_header .qd_controls>li {
+                cursor: pointer;
+                float: left;
+                width: 18px;
+                height: 18px;
+                text-align: center;
+            }
+
+            .qd_controls>li {
+                position: relative;
+                background-position: center center;
+                background-repeat: no-repeat;
+                opacity: .4;
+                transition: opacity 300ms ease;
+            }
+
+            .qd_header .qd_controls {
+                position: absolute;
+                right: 3px;
+            }
+
+            .qd_controls .qd_popout {
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAANUlEQVR4nI2QMQoAMAwCz5L/f9mOzZIaN0E9UDyZhaaQz6atgBHgambEJ5wBKoS0WaIvfT+6K2MIECN19MAAAAAASUVORK5CYII=);
+            }
+            
+            .qd_controls .qd_maximise {
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAIklEQVR4nGNkYGD4z0AAMBFSAAOETPpPlEmDUREjAxHhBABPvAQLFv3qngAAAABJRU5ErkJggg==);
+            }
+
+            .qd_controls .qd_close {
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKUlEQVR4nGNgYGD4z4Af/Mdg4FKASwCnDf8JKSBoAtEmEXQTQd8RDCcA6+4Q8OvIgasAAAAASUVORK5CYII=);
+            }
+
+            .qd_contents {
+                border: 1px solid #cccccc;
+            }
+
+            .qd_content {
+                background: #e1e1e1;
+                border: 1px solid #cccccc;
+            }
+            
+            .qd_body.qd_active{
+                display: block;
+            }
+            .qd_body.qd_inactive{
+                display: none;
+            }
+        </style>
+        <script type="text/x-template" id="tab-container-template">
+            <div class="qd_container" ref="container" >
+                <div class="qd_container_contents">
+                    <div class="qd_header">
+                        <ul class="qd_tabs">
+                            <li v-for="(item, index) in items" class="qd_tab" :class="{'qd_active': item.active}" :data-tab-id="item.id" :id="'item-' + index" @click="tabClicked">
+                                <i class="qd_left"></i><span class="qd_title">{{item.name}}</span>
+                                <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
+                            </li>
+                        </ul>
+                    </div>
+                    <div v-for="(item, index) in items" class="qd_body" :class="{'qd_inactive': !item.active}" data-qd-column="1">
+                        {{item.name}}
+                    </div>
+                </div>
+            </div>
+        </script>
+</head>
+
+<body>
+    <div id="app">
+        <qd_tab_container :items="appData.items"></qd_tab_container>
+    </div>
+    <script>
+        var appData = {
+            items: [
+                {id:1,name:"Test 1",active:true},
+                {id:2,name:"Test 2",active:false}]
+        };
+
+        Vue.component('qd_tab_container', {
+            props: ['items'],
+            template: '#tab-container-template',
+            created: function () {},
+            mounted: function () {},
+            updated: function () {},
+            methods: {
+                tabClicked: function(evt){
+                    var tabId = evt.currentTarget.getAttribute('data-tab-id');
+                    this.items.forEach(function(item){
+                        item.active = item.id == tabId;
+                    });
+                }
+            },
+            computed: {
+
+            }
+        });
+
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                appData: appData
+            },
+            created: function () {},
+            mounted: function () {},
+            methods: {
+
+            },
+            computed: {
+
+            },
+            watch: {
+
+            }
+        });
+    </script>
+</body>
+</html>
