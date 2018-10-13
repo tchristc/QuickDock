@@ -23,12 +23,6 @@
                 grid-template-rows: auto;
                 grid-template-columns: auto 5px auto;
             }
-
-            .qd_column {
-                /* border: solid black 1px; */
-                /* background: #e1e1e1; */
-                border: 1px solid #cccccc;
-            }
     
             .qd_splitter:hover{
                 background:#e1e1e1;
@@ -186,73 +180,83 @@
                 background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKUlEQVR4nGNgYGD4z4Af/Mdg4FKASwCnDf8JKSBoAtEmEXQTQd8RDCcA6+4Q8OvIgasAAAAASUVORK5CYII=);
             }
 
+            .qd_contents {
+                border: 1px solid #cccccc;
+            }
+
+            .qd_content {
+                background: #e1e1e1;
+                border: 1px solid #cccccc;
+            }
+
         </style>
         <script type="text/x-template" id="container-template">
             <div class="qd_container" :class="containerClass" ref="container"  :style="{ 'grid-template-columns': gtc, 'grid-template-rows': gtr }">
-                <div class="qd_column" data-qd-column="1">
-                        <div class="qd_header">
-                            <ul class="qd_tabs">
-                                <li class="qd_tab qd_active" title="Component 1">
-                                    <i class="qd_left"></i><span class="qd_title">
-                                        Component
-                                        1
-                                    </span>
-                                    <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
-                                </li>
-                                <li class="qd_tab" title="Component 2">
-                                    <i class="qd_left"></i><span class="qd_title">
-                                        Component
-                                        2
-                                    </span>
-                                    <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
-                                </li>
-                            </ul>
-                            <ul class="qd_controls">
-                                <li class="qd_tabdropdown" title="additional tabs" style="display: none;"></li>
-                                <li class="qd_popout" title="open in new window"></li>
-                                <li class="qd_maximise" title="maximise"></li>
-                                <li class="qd_close" title="close" style="display: list-item;"></li>
-                            </ul>
-                        </div>
+                <div class="qd_container_contents" v-for="(contents, index) in container.contentsArray" :contents="contents" :id="'contents-' + index" >
+                    <div class="qd_header">
+                        <ul class="qd_tabs">
+                                <!-- qd_active -->
+                            <li class="qd_tab" v-for="(content, index) in contents" :title="content.name">
+                                <i class="qd_left"></i><span class="qd_title">{{content.name}}</span>
+                                <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
+                            </li>
+                        </ul>
+                        <ul class="qd_controls">
+                            <li class="qd_tabdropdown" title="additional tabs" style="display: none;"></li>
+                            <li class="qd_popout" title="open in new window"></li>
+                            <li class="qd_maximise" title="maximise"></li>
+                            <li class="qd_close" title="close" style="display: list-item;"></li>
+                        </ul>
                     </div>
-                    <div class="qd_splitter" :class="splitterClass" data-drag-itemtype="vertical_splitter" data-drag-index="0">
-                        <div class="qd_drag_handle"></div>
+                    <div class="qd_body" v-for="(content, index) in contents" data-qd-column="1">
                     </div>
-                    <div class="qd_column" data-qd-column="1">
-                        <div class="qd_header">
-                            <ul class="qd_tabs">
-                                <li class="qd_tab qd_active" title="Component 1">
-                                    <i class="qd_left"></i><span class="qd_title">
-                                        Component
-                                        1
-                                    </span>
-                                    <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
-                                </li>
-                                <li class="qd_tab" title="Component 2">
-                                    <i class="qd_left"></i><span class="qd_title">
-                                        Component
-                                        2
-                                    </span>
-                                    <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
-                                </li>
-                            </ul>
-                            <ul class="qd_controls">
-                                <li class="qd_tabdropdown" title="additional tabs" style="display: none;"></li>
-                                <li class="qd_popout" title="open in new window"></li>
-                                <li class="qd_maximise" title="maximise"></li>
-                                <li class="qd_close" title="close" style="display: list-item;"></li>
-                            </ul>
-                        </div>
+                    <!-- display  splitter if NOT the last item in array-->
+                    <div class="qd_splitter" :class="splitterClass" data-drag-itemtype="vertical_splitter" data-drag-index="0" v-if="index != container.contentsArray.length - 1">
+                            <div class="qd_drag_handle"></div>
                     </div>
+                </div>
+            </div>
+        </script>
+
+        <script type="text/x-template" id="contents-array-template">
+            <div class="qd_contents">
+
+            </div>
+        </script>
+
+        <script type="text/x-template" id="contents-header-template">
+
+        </script>
+
+        <script type="text/x-template" id="content-template">
+            <div class="qd_header">
+                <ul class="qd_tabs">
+                    <li class="qd_tab qd_active" title="Component 1">
+                        <i class="qd_left"></i><span class="qd_title">
+                            Component 1
+                        </span>
+                        <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
+                    </li>
+                    <li class="qd_tab" title="Component 2">
+                        <i class="qd_left"></i><span class="qd_title">
+                            Component 2
+                        </span>
+                        <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
+                    </li>
+                </ul>
+                <ul class="qd_controls">
+                    <li class="qd_tabdropdown" title="additional tabs" style="display: none;"></li>
+                    <li class="qd_popout" title="open in new window"></li>
+                    <li class="qd_maximise" title="maximise"></li>
+                    <li class="qd_close" title="close" style="display: list-item;"></li>
+                </ul>
             </div>
         </script>
 </head>
 
 <body>
     <div id="app" @mousedown="dragStart" @touchstart="dragStart">
-        <qd_container v-for="(container, index) in appData.containers" :container="container" :id="'container-' + container.id" >
-
-        </qd_container>
+        <qd_container v-for="(container, index) in appData.containers" :container="container" :id="'container-' + container.id" ></qd_container>
     </div>
     <script>
         var appData = {
@@ -291,7 +295,8 @@
             containers: [{
                 id: 0,
                 split: 300,
-                orientation: "column"
+                orientation: "column",
+                tabs: []
             }]
         };
 
