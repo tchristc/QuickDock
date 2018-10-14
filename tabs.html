@@ -244,18 +244,31 @@
     <div id="app">
         <qd_tab_container :items="appData.items"></qd_tab_container>
     </div>
+    <div id="test1">test 1</div>
+    <div id="test2">test 2222</div>
     <script>
         var appData = {
             items: [
-                {id:1,name:"Test 1",active:true,body:"<div>test 1</div>"},
-                {id:2,name:"Test 2",active:false,body:"<div>test 2</div>"}]
+                {id:1,name:"Test 1",active:true,body:"", elementId: "test1"},
+                {id:2,name:"Test 2",active:false,body:"", elementId: "test2"}]
         };
 
         Vue.component('qd_tab_container', {
             props: ['items'],
             template: '#tab-container-template',
             created: function () {},
-            mounted: function () {},
+            mounted: function () {
+                this.items.forEach(function(item){
+                    if(item.elementId){
+                        var element = document.getElementById(item.elementId);
+                        if(element)
+                        {
+                            element.parentElement.removeChild(element);
+                            item.body = element.outerHTML;
+                        }
+                    }
+                });
+            },
             updated: function () {},
             methods: {
                 tabClicked: function(evt){
