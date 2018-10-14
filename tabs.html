@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <script src="scripts/vue/vue.min.js"></script>
-    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
-        crossorigin="anonymous"></script> -->
     <style>
             .qd_header {
                 overflow: visible;
@@ -189,6 +186,8 @@
                 width: 500px;
                 height: 500px;
                 position: relative;
+                background: #e1e1e1;
+                color: #777777;
             }
 
             .qd_item,
@@ -226,7 +225,7 @@
                     <div class="qd_body">
                         <div v-for="(item, index) in items" class="qd_item" :class="{'qd_inactive': !item.active}" data-qd-column="1" v-html="item.body">
                         </div>
-                        <div class="qd_proxy_dock debug_border" ref="proxy_dock">
+                        <div class="qd_proxy_dock" ref="proxy_dock">
                             <!-- <div class="qd_proxy" :class="{'qd_active': appData.proxy.active, appData.proxy.location}"></div> -->
                             <div class="qd_proxy qd_top"></div> 
                             <div class="qd_proxy qd_left"></div> 
