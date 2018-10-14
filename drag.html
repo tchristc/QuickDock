@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <script src="scripts/vue/vue.min.js"></script>
     <style>
@@ -35,7 +34,8 @@
                 color: #888888;
                 background: #fafafa;
                 margin-right: 2px;
-                padding-bottom: 4px;
+                padding-bottom: 2px;
+                padding-top: 2px;
                 border: 1px solid #cccccc;
                 border-bottom: none;
             }
@@ -45,7 +45,7 @@
                 float: left;
                 height: 14px;
                 margin-top: 1px;
-                padding: 0 10px 5px;
+                padding: 0 10px 4px;
                 padding-right: 25px;
                 position: relative;
             }
@@ -84,7 +84,7 @@
                 color: #777777;
             }
 
-            .qd_header .qd_tab .qd_active {
+            .qd_header .qd_tab.qd_active {
                 border-bottom: none;
                 box-shadow: 2px -2px 2px -2px rgba(0,0,0,0.2);
                 padding-bottom: 5px;
@@ -137,15 +137,84 @@
                 border: 1px solid #cccccc;
             }
             
-            .qd_body.qd_active{
+            .qd_item.qd_active{
                 display: block;
             }
-            .qd_body.qd_inactive{
+
+            .qd_item.qd_inactive{
                 display: none;
+            }
+
+            .qd_proxy_dock {
+                display: grid;
+                grid-template-rows: auto auto auto auto;
+                grid-template-columns: auto auto auto auto;
+                grid-gap: 0;
+            }
+    
+            .qd_proxy.qd_top {
+                grid-row: 1 / 2;
+                grid-column: 1 / 5;
+            }
+
+            .qd_proxy.qd_bottom {
+                grid-row: 4 / 5;
+                grid-column: 1 / 5;
+            }
+
+            .qd_proxy.qd_left {
+                grid-row: 1 / 5;
+                grid-column: 1 / 2;
+            }
+
+            .qd_proxy.qd_right {
+                grid-row: 1 / 5;
+                grid-column: 4 / 5;
+            }
+
+            .qd_proxy.qd_center {
+                grid-row: 2 / 4;
+                grid-column: 2 / 4;
+            }
+
+            .debug_border
+            {
+                border: dashed black 1px; 
+                background: transparent;
+            }
+
+            .qd_body {
+                width: 500px;
+                height: 500px;
+                position: relative;
+                background: #e1e1e1;
+                color: #777777;
+                border: 1px solid #cccccc;
+            }
+
+            .qd_item,
+            .qd_proxy_dock {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+
+            .qd_proxy_dock {
+                z-index: 10;
+            }
+
+            .qd_proxy {
+                border: transparent;
+            }
+
+            .qd_proxy:hover {
+                border: dashed black 1px; 
             }
         </style>
         <script type="text/x-template" id="tab-container-template">
-            <div class="qd_container" ref="container" @mousemove="displayProxy">
+            <div class="qd_container" ref="container" >
                 <div class="qd_tab_container">
                     <div class="qd_header">
                         <ul class="qd_tabs">
@@ -155,7 +224,17 @@
                             </li>
                         </ul>
                     </div>
-                    <div v-for="(item, index) in items" class="qd_body" :class="{'qd_inactive': !item.active}" data-qd-column="1" v-html="item.body">
+                    <div class="qd_body">
+                        <div v-for="(item, index) in items" class="qd_item" :class="{'qd_inactive': !item.active}" data-qd-column="1" v-html="item.body">
+                        </div>
+                        <div class="qd_proxy_dock" ref="proxy_dock">
+                            <!-- <div class="qd_proxy" :class="{'qd_active': appData.proxy.active, appData.proxy.location}"></div> -->
+                            <div class="qd_proxy qd_top"></div> 
+                            <div class="qd_proxy qd_left"></div> 
+                            <div class="qd_proxy qd_center"></div> 
+                            <div class="qd_proxy qd_bottom"></div> 
+                            <div class="qd_proxy qd_right"></div> 
+                        </div>
                     </div>
                 </div>
             </div>
@@ -166,7 +245,6 @@
     <div id="app">
         <qd_tab_container :items="appData.items"></qd_tab_container>
     </div>
-
     <div id="test1">test 1</div>
     <div id="test2">test 2222</div>
     <script>
@@ -199,9 +277,6 @@
                     this.items.forEach(function(item){
                         item.active = item.id == tabId;
                     });
-                },
-                displayProxy: function(evt){
-                    var target = evt.currentTarget;
                 }
             },
             computed: {
