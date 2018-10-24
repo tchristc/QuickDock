@@ -212,9 +212,13 @@
             .qd_proxy:hover {
                 border: dashed black 1px; 
             }
+
+            .qd_entity.qd_inactive{
+                display: none;
+            }
         </style>
         <script type="text/x-template" id="tab-container-template">
-            <div class="qd_container" ref="container" >
+            <div class="qd_container" ref="container" @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp">
                 <div class="qd_tab_container">
                     <div class="qd_header">
                         <ul class="qd_tabs">
@@ -237,25 +241,32 @@
                         </div>
                     </div>
                 </div>
+                <div  class="qd_entity" :class="{'qd_inactive': !input.dragging}" style="height:50px; width: 50px; background:black;">
+
+                </div>
             </div>
         </script>
 </head>
 
 <body>
     <div id="app">
-        <qd_tab_container :items="appData.items"></qd_tab_container>
+        <qd_tab_container :items="appData.items" :input="appData.input"></qd_tab_container>
     </div>
     <div id="test1">test 1</div>
     <div id="test2">test 2222</div>
     <script>
         var appData = {
+            
             items: [
                 {id:1,name:"Test 1",active:true,body:"", elementId: "test1"},
-                {id:2,name:"Test 2",active:false,body:"", elementId: "test2"}]
+                {id:2,name:"Test 2",active:false,body:"", elementId: "test2"}],
+            input: {
+                dragging: false
+            }
         };
 
         Vue.component('qd_tab_container', {
-            props: ['items'],
+            props: ['items','input'],
             template: '#tab-container-template',
             created: function () {},
             mounted: function () {
@@ -273,10 +284,22 @@
             updated: function () {},
             methods: {
                 tabClicked: function(evt){
+                    
                     var tabId = evt.currentTarget.getAttribute('data-tab-id');
                     this.items.forEach(function(item){
                         item.active = item.id == tabId;
                     });
+                },
+                mouseDown: function(evt){
+                    evt.preventDefault();
+                    this.input.dragging = true;
+                },
+                mouseMove: function(evt){
+                    
+                },
+                mouseUp: function(evt)
+                {
+                    this.input.dragging = false;
                 }
             },
             computed: {
