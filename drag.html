@@ -215,11 +215,9 @@
 
             .qd_drag_container{
                 position: absolute;
+                z-index: 9;
             }
 
-            .qd_drag_container.qd_inactive{
-                display: none;
-            }
         </style>
         <script type="text/x-template" id="tab-container-template">
             <div class="qd_container" ref="container" @click="click" @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp">
@@ -245,8 +243,8 @@
                         </div>
                     </div>
                 </div>
-                <!-- :class="{'qd_inactive': !input.dragging}" -->
-                <div  class="qd_drag_container"  v-if="input.selected" :style="{ left: input.x, top: input.y}">
+                <!-- :class="{'qd_inactive': !input.dragging}" { left: input.x, top: input.y } :style="stylez"-->
+                <div  class="qd_drag_container"  v-if="input.selected" ref="dragContainer" :style="stylez">
                     <div class="qd_tab_container">
                         <div class="qd_header">
                             <ul class="qd_tabs">
@@ -305,11 +303,12 @@
             updated: function () {},
             methods: {
                 click: function(evt){
-                    var tabClosest = evt.target.closest('.qd_tab');
-                    if(tabClosest){
-                        var tabId = tabClosest.getAttribute('data-tab-id');
-                        this.items.forEach(function(item){item.active = item.id == tabId;});
-                    }
+                    evt.preventDefault();
+                    // var tabClosest = evt.target.closest('.qd_tab');
+                    // if(tabClosest){
+                    //     var tabId = tabClosest.getAttribute('data-tab-id');
+                    //     this.items.forEach(function(item){item.active = item.id == tabId;});
+                    // }
                 },
                 mouseDown: function(evt){
                     evt.preventDefault();
@@ -317,12 +316,18 @@
                     var tabClosest = evt.target.closest('.qd_tab');
                     if(tabClosest){
                         var tabId = tabClosest.getAttribute('data-tab-id');
+                        this.items.forEach(function(item){item.active = item.id == tabId;});
                         this.input.selected = this.items.find(function(item){return item.id == tabId;});
                     }
                 },
                 mouseMove: function(evt){
                     this.input.x = evt.clientX;
                     this.input.y = evt.clientY;
+                    // if(this.$refs.dragContainer){
+                    //     this.$refs.dragContainer.style.left = evt.clientX;
+                    //     this.$refs.dragContainer.style.top = evt.clientY;
+                    // }
+                    
                 },
                 mouseUp: function(evt){
                     this.input.dragging = false;
@@ -331,8 +336,22 @@
             },
             computed: {
                 stylez: function(){
-                    return {left: this.input.x, top: this.input.y}
+                    return {left: this.input.x + 'px', top: this.input.y + 'px'};
                 }
+            },
+            watch: {
+                // input: {
+                //     handler: function(newValue) {
+                //         // console.log("input: {x:" + this.input.x + ", y:"  + this.input.y + "}");
+                //     },
+                //     deep: true
+                // },
+                // stylez: {
+                //     handler: function(newValue) {
+                //         console.log("input: {x:" + this.input.x + ", y:"  + this.input.y + "}");
+                //     },
+                //     deep: true
+                // }
             }
         });
 
