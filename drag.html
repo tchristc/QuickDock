@@ -213,16 +213,20 @@
                 border: dashed black 1px; 
             }
 
-            .qd_entity.qd_inactive{
+            .qd_drag_container{
+                position: absolute;
+            }
+
+            .qd_drag_container.qd_inactive{
                 display: none;
             }
         </style>
         <script type="text/x-template" id="tab-container-template">
-            <div class="qd_container" ref="container" @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp">
+            <div class="qd_container" ref="container" @click="click" @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp">
                 <div class="qd_tab_container">
                     <div class="qd_header">
                         <ul class="qd_tabs">
-                            <li v-for="(item, index) in items" class="qd_tab" :class="{'qd_active': item.active}" :data-tab-id="item.id" :id="'item-' + index" @click="tabClicked">
+                            <li v-for="(item, index) in items" class="qd_tab" :class="{'qd_active': item.active}" :data-tab-id="item.id" :id="'item-' + index" >
                                 <i class="qd_left"></i><span class="qd_title">{{item.name}}</span>
                                 <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
                             </li>
@@ -241,8 +245,22 @@
                         </div>
                     </div>
                 </div>
-                <div  class="qd_entity" :class="{'qd_inactive': !input.dragging}" style="height:50px; width: 50px; background:black;">
-
+                <!-- :class="{'qd_inactive': !input.dragging}" -->
+                <div  class="qd_drag_container"  v-if="input.selected" :style="{ left: input.x, top: input.y}">
+                    <div class="qd_tab_container">
+                        <div class="qd_header">
+                            <ul class="qd_tabs">
+                                <li class="qd_tab qd_active" :data-tab-id="input.selected.id" >
+                                    <i class="qd_left"></i><span class="qd_title">{{input.selected.name}}</span>
+                                    <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="qd_body">
+                            <div class="qd_item" data-qd-column="1" v-html="input.selected.body">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </script>
@@ -261,7 +279,10 @@
                 {id:1,name:"Test 1",active:true,body:"", elementId: "test1"},
                 {id:2,name:"Test 2",active:false,body:"", elementId: "test2"}],
             input: {
-                dragging: false
+                x: 0,
+                y: 0,
+                dragging: false,
+                selected: null
             }
         };
 
@@ -283,27 +304,35 @@
             },
             updated: function () {},
             methods: {
-                tabClicked: function(evt){
-                    
-                    var tabId = evt.currentTarget.getAttribute('data-tab-id');
-                    this.items.forEach(function(item){
-                        item.active = item.id == tabId;
-                    });
+                click: function(evt){
+                    var tabClosest = evt.target.closest('.qd_tab');
+                    if(tabClosest){
+                        var tabId = tabClosest.getAttribute('data-tab-id');
+                        this.items.forEach(function(item){item.active = item.id == tabId;});
+                    }
                 },
                 mouseDown: function(evt){
                     evt.preventDefault();
                     this.input.dragging = true;
+                    var tabClosest = evt.target.closest('.qd_tab');
+                    if(tabClosest){
+                        var tabId = tabClosest.getAttribute('data-tab-id');
+                        this.input.selected = this.items.find(function(item){return item.id == tabId;});
+                    }
                 },
                 mouseMove: function(evt){
-                    
+                    this.input.x = evt.clientX;
+                    this.input.y = evt.clientY;
                 },
-                mouseUp: function(evt)
-                {
+                mouseUp: function(evt){
                     this.input.dragging = false;
+                    this.input.selected = null;
                 }
             },
             computed: {
-
+                stylez: function(){
+                    return {left: this.input.x, top: this.input.y}
+                }
             }
         });
 
