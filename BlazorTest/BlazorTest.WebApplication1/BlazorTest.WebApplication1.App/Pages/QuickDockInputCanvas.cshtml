@@ -1,0 +1,30 @@
+﻿<style>
+    .input_canvas {
+        /*position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%*/
+    }
+</style>
+<div class="input_canvas" onmousemove="@(e=> Config.Input.OnMouseMove(e))" onmouseup="@(e=> Config.Input.OnMouseUp(e))">
+    @ChildContent
+</div>
+@functions {
+    [CascadingParameter] protected QuickDockConfig Config { get; set; }
+    [Parameter] private RenderFragment ChildContent { get; set; }
+    //long x = 0;
+    //long y = 0;
+
+    //void MouseMove(UIMouseEventArgs e)
+    //{
+    //    x = e.ClientX;
+    //    y = e.ClientY;
+    //}
+
+    //void MouseUp(UIMouseEventArgs e)
+    //{
+    //    x = e.ClientX;
+    //    y = e.ClientY;
+    //}
+}

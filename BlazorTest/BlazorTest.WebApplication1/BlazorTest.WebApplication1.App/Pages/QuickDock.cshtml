@@ -1,0 +1,20 @@
+﻿<CascadingValue Value="@Config">
+    <QuickDockInputCanvas>
+        <div class="qd_main_container" ref="mainContainer">
+            @foreach (var content in Config.Contents)
+            {
+                <QuickDockContainer Content="@content"></QuickDockContainer>
+            }
+        </div>
+    </QuickDockInputCanvas>
+</CascadingValue>
+@using BlazorTest.WebApplication1.App;
+@functions {
+    ElementRef mainContainer;
+    [Parameter] QuickDockConfig Config { get; set; }
+
+    protected override async Task OnAfterRenderAsync()
+    {
+        Config.MainContainerRect = await mainContainer.GetPos();
+    }
+}

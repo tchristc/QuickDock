@@ -1,0 +1,14 @@
+﻿<li class="qd_tab @(Content.Active?"qd_active":"")" id="@Content.Id" onclick="@(e=> OnClick(e))">
+    <i class="qd_left"></i><span class="qd_title">@Content.Title</span>
+    <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
+</li>
+@functions {
+    [CascadingParameter] protected QuickDockConfig Config { get; set; }
+    [Parameter] protected QuickDockContent Content { get; set; }
+    [Parameter] protected Action<QuickDockContent> OnTabClick { get; set; }
+
+    public void OnClick(UIMouseEventArgs e)
+    {
+        OnTabClick(Content);
+    }
+}

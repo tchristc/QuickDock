@@ -1,0 +1,10 @@
+﻿<div class="qd_content_container">
+    <div class="qd_content">
+        @((MarkupString)Content.HtmlBody)
+    </div>
+</div>
+@functions {
+
+    [CascadingParameter] protected QuickDockConfig Config { get; set; }
+    [Parameter] protected QuickDockContent Content { get; set; }
+}

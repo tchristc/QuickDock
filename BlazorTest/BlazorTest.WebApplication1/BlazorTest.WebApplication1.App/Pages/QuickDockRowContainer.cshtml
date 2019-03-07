@@ -1,0 +1,53 @@
+﻿<div class="qd_row_container" style="@GetGridStyle()">
+    @{
+        int i = 0;
+        foreach (var content in Contents)
+        {
+            <QuickDockContainer Content="@content"></QuickDockContainer>
+            if (content != Contents.Last())
+            {
+                <div class="qd_vertical_splitter" ref="splitter" onmousedown="@(e => OnMouseDown(e))"></div>
+            }
+            i++;
+        }
+    }
+</div>
+@using BlazorTest.WebApplication1.App;
+@using Microsoft.Extensions.Logging;
+@inject ILogger<QuickDockColumnContainer> logger
+@functions {
+    ElementRef splitter;
+    [CascadingParameter] protected QuickDockConfig Config { get; set; }
+    [Parameter] protected List<QuickDockContent> Contents { get; set; }
+
+    long? split = null;
+
+    private string CalcSplit()
+    {
+        return split != null ? $"{split}px" : "auto";
+    }
+
+    public string GetGridStyle()
+    {
+        string cols = $"{CalcSplit()} 5px auto";
+        //var rows = string.Join(" 5px ", Enumerable.Repeat("auto", Contents.Count));
+        return $"height: 100%; display: grid; grid-template-columns: {cols}; grid-template-rows: auto;";
+    }
+
+    public void OnMouseDown(UIMouseEventArgs e)
+    {
+        Config.Input.MouseMove += OnMouseMove;
+        Config.Input.MouseUp += OnMouseUp;
+    }
+
+    public void OnMouseMove(UIMouseEventArgs e)
+    {
+        split = e.ClientX - Config.MainContainerRect.x;
+    }
+
+    public void OnMouseUp(UIMouseEventArgs e)
+    {
+        Config.Input.MouseMove -= OnMouseMove;
+        Config.Input.MouseUp -= OnMouseUp;
+    }
+}

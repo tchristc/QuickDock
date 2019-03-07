@@ -1,0 +1,42 @@
+﻿@page "/randomcolor"
+<style>
+    .input_canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%
+    }
+
+    .cb{
+        height: 50px;
+        width: 50px;
+    }
+</style>
+<div class="input_canvas" onmousemove="@(e=> MouseMove(e))"></div>
+<h1>Quick Dock</h1>
+
+@for(int i=0; i<5; i++)
+{
+    <div class="cb" style="background-color:@GetRandomColor()"></div>
+}
+
+@functions {
+    static Random Rand = new Random();
+
+    long x = 0;
+    long y = 0;
+
+    void MouseMove(UIMouseEventArgs e)
+    {
+        x = e.ClientX;
+        y = e.ClientY;
+    }
+
+
+    string GetRandomColor()
+    {
+        var randomColor = $"#{Rand.Next(256):X}{Rand.Next(256):X}{Rand.Next(256):X}";
+        return randomColor;
+    }
+}

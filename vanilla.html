@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+            .qd_header {
+                overflow: visible;
+                position: relative;
+                z-index: 1;
+                height: 20px;
+            }
+
+            .qd_header ul {
+                margin: 0;
+                padding: 0;
+                list-style-type: none;
+            }
+
+            .qd_header .qd_tabs {
+                position: absolute;
+            }
+
+            .qd_header .qd_tab {
+                position: absolute;
+            }
+
+            .qd_header [class^=qd_] {
+                box-sizing: content-box !important;
+            }
+
+            .qd_header .qd_tab {
+                font-family: Arial,sans-serif;
+                font-size: 12px;
+                color: #888888;
+                background: #fafafa;
+                margin-right: 2px;
+                padding-bottom: 0px;
+                padding-top: 2px;
+                border: 1px solid #cccccc;
+                border-bottom: none;
+            }
+            
+            .qd_header .qd_tabs .qd_tab {
+                cursor: pointer;
+                float: left;
+                height: 12px;
+                margin-top: 1px;
+                padding: 2px 10px 4px;
+                padding-right: 25px;
+                position: relative;
+            }
+            /* :not(.qd_dragging) */
+            /* .qd_container .qd_tab_container .qd_header .qd_tabs .qd_tab {
+                cursor: pointer;
+            } */
+
+            .qd_drag_container .qd_tab_container .qd_header .qd_tabs .qd_tab {
+                cursor: move;
+            }
+
+            .qd_header .qd_tab .qd_title {
+                display: inline-block;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .qd_header .qd_tab .qd_close_tab {
+                width: 11px;
+                height: 11px;
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAYAAADEUlfTAAAAIklEQVR4nGNgYGD4z4Ad/Mdg4ODDBXCZRFgCp5EEHQMXBwAQAgz0SVCcggAAAABJRU5ErkJggg==);
+                background-position: center center;
+                background-repeat: no-repeat;
+                right: 6px;
+                top: 4px;
+                opacity: 1;
+                position: absolute;
+                text-align: center;
+            }
+
+            .qd_header .qd_tab i.qd_left {
+                top: 0;
+                left: -2px;
+            }
+
+            .qd_header .qd_tab i.qd_right {
+                top: 0;
+                right: -2px;
+            }
+
+           .qd_tab.qd_active{
+                background: #e1e1e1;
+                color: #777777;
+            }
+
+            .qd_header .qd_tab.qd_active {
+                border-bottom: none;
+                box-shadow: 2px -2px 2px -2px rgba(0,0,0,0.2);
+                padding-bottom: 5px;
+            }
+
+            .qd_header .qd_controls {
+                position: absolute;
+                right: 3px;
+            }
+
+            .qd_header .qd_controls>li {
+                cursor: pointer;
+                float: left;
+                width: 18px;
+                height: 18px;
+                text-align: center;
+            }
+
+            .qd_controls>li {
+                position: relative;
+                background-position: center center;
+                background-repeat: no-repeat;
+                opacity: .4;
+                transition: opacity 300ms ease;
+            }
+
+            .qd_header .qd_controls {
+                position: absolute;
+                right: 3px;
+            }
+
+            .qd_controls .qd_popout {
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAANUlEQVR4nI2QMQoAMAwCz5L/f9mOzZIaN0E9UDyZhaaQz6atgBHgambEJ5wBKoS0WaIvfT+6K2MIECN19MAAAAAASUVORK5CYII=);
+            }
+            
+            .qd_controls .qd_maximise {
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAIklEQVR4nGNkYGD4z0AAMBFSAAOETPpPlEmDUREjAxHhBABPvAQLFv3qngAAAABJRU5ErkJggg==);
+            }
+
+            .qd_controls .qd_close {
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKUlEQVR4nGNgYGD4z4Af/Mdg4FKASwCnDf8JKSBoAtEmEXQTQd8RDCcA6+4Q8OvIgasAAAAASUVORK5CYII=);
+            }
+
+            .qd_contents {
+                border: 1px solid #cccccc;
+            }
+
+            .qd_content {
+                background: #e1e1e1;
+                border: 1px solid #cccccc;
+            }
+            
+            .qd_item.qd_active{
+                display: block;
+            }
+
+            .qd_item.qd_inactive{
+                display: none;
+            }
+
+            .qd_proxy_dock {
+                display: grid;
+                grid-template-rows: auto auto auto auto;
+                grid-template-columns: auto auto auto auto;
+                grid-gap: 0;
+            }
+    
+            .qd_proxy.qd_top {
+                grid-row: 1 / 2;
+                grid-column: 1 / 5;
+            }
+
+            .qd_proxy.qd_bottom {
+                grid-row: 4 / 5;
+                grid-column: 1 / 5;
+            }
+
+            .qd_proxy.qd_left {
+                grid-row: 1 / 5;
+                grid-column: 1 / 2;
+            }
+
+            .qd_proxy.qd_right {
+                grid-row: 1 / 5;
+                grid-column: 4 / 5;
+            }
+
+            .qd_proxy.qd_center {
+                grid-row: 2 / 4;
+                grid-column: 2 / 4;
+            }
+
+            .debug_border
+            {
+                border: dashed black 1px; 
+                background: transparent;
+            }
+
+            .qd_body {
+                width: 500px;
+                height: 500px;
+                position: relative;
+                background: #e1e1e1;
+                color: #777777;
+                border: 1px solid #cccccc;
+            }
+
+            .qd_item,
+            .qd_proxy_dock {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+
+            .qd_proxy_dock {
+                z-index: 10;
+            }
+
+            .qd_proxy {
+                border: transparent;
+            }
+
+            .qd_proxy:hover {
+                border: dashed black 1px; 
+            }
+
+            .qd_drag_container{
+                position: absolute;
+                z-index: 9;
+            }
+
+            .qd_container.qd_dragging{
+                cursor: move;
+            }
+            
+        </style>
+        <script type="text/x-template" id="tab-container-template">
+            <div class="qd_container" :class="{'qd_dragging': input.dragging}">
+                <div class="qd_tab_container">
+                    <div class="qd_header">
+                        <ul class="qd_tabs">
+                            <li v-for="(item, index) in items" class="qd_tab" :class="{'qd_active': item.active}" :data-tab-id="item.id" :id="'item-' + index" >
+                                <i class="qd_left"></i><span class="qd_title">{{item.name}}</span>
+                                <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="qd_body">
+                        <div v-for="(item, index) in items" class="qd_item" :class="{'qd_inactive': !item.active}" data-qd-column="1" v-html="item.body">
+                        </div>
+                        <div class="qd_proxy_dock" ref="proxy_dock">
+                            <!-- <div class="qd_proxy" :class="{'qd_active': appData.proxy.active, appData.proxy.location}"></div> -->
+                            <div class="qd_proxy qd_top"></div> 
+                            <div class="qd_proxy qd_left"></div> 
+                            <div class="qd_proxy qd_center"></div> 
+                            <div class="qd_proxy qd_bottom"></div> 
+                            <div class="qd_proxy qd_right"></div> 
+                        </div>
+                    </div>
+                </div>
+                <!-- :class="{'qd_inactive': !input.dragging}" { left: input.x, top: input.y } :style="stylez"-->
+                <div  class="qd_drag_container"  v-if="input.selected" ref="dragContainer" :style="stylez">
+                    <div class="qd_tab_container">
+                        <div class="qd_header">
+                            <ul class="qd_tabs">
+                                <li class="qd_tab qd_active" :class="{'qd_dragging': input.dragging}" :data-tab-id="input.selected.id" >
+                                    <i class="qd_left"></i><span class="qd_title">{{input.selected.name}}</span>
+                                    <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="qd_body">
+                            <div class="qd_item" data-qd-column="1" v-html="input.selected.body">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </script>
+</head>
+<body>
+    <div id="app" class="qd_tab_container">
+        
+    </div>
+    <div id="test1">test 1</div>
+    <div id="test2">test 2222</div>
+    <script>
+        class QuickDock {
+            input ={
+                drag_start: {
+                    x: 0,
+                    y: 0,
+                    target: null
+                },
+                drag_current: {
+                    x: 0,
+                    y: 0,
+                    target: null
+                },
+                drag_end: {
+                    x: 0,
+                    y: 0,
+                    target: null
+                },
+                drag_map_events: {
+                    touch: {
+                        move: "touchmove",
+                        stop: "touchend"
+                    },
+                    mouse: {
+                        move: "mousemove",
+                        stop: "mouseup"
+                    }
+                },
+                drag_events: {},
+                drag_itemtype: "",
+                drag_index: 0,
+                dragging: false,
+                touch: false,
+                x: 0,
+                y: 0,
+                selected: null
+            }
+
+            constructor(config, root) {
+                this.config = config;
+                this.root = root;
+                this.components = [];
+            }
+
+            init(){
+                
+                this.root.addEventListener("click", function(evt){});
+                this.root.addEventListener("mousedown", this.dragStart);
+                this.root.addEventListener("touchstart", this.dragStart);
+
+                this.config.content.forEach(function(content, index){
+                    switch(content.type){
+                        case "row":
+                            break;
+                        case "column":
+                            break;
+                        case "stack":
+                            break;
+                        case "component":
+                            break;
+                    }
+                });
+            }
+
+            dragStart(evt){
+                this.input.touch = (evt.type === "touchstart");
+                if (!this.input.touch && evt.button !== 0) return;
+                    this.input.drag_events = this.input.touch ? this.input.drag_map_events.touch : this.input.drag_map_events.mouse;
+                    this.input.drag_itemtype = evt.target.getAttribute("data-drag-itemtype");
+                    this.input.drag_index = evt.target.getAttribute("data-drag-index");
+                    
+                    this.root.addEventListener(this.input.drag_events.move, this.dragMove)
+                    this.root.addEventListener(this.input.drag_events.stop, this.dragEnd)
+
+                    this.input.dragging = true;
+
+                    this.getPos(evt);
+                    this.input.drag_start = this.input.drag_current;
+            }
+
+            dragMove (evt) {
+                this.getPos(evt);
+
+                if(this.input.drag_itemtype === "horizontal_splitter"){
+                    this.input.horizontal_splitter.splice(this.input.drag_index,1,this.input.drag_current.y);
+                }
+                if(this.input.drag_itemtype === "vertical_splitter"){
+                    this.input.vertical_splitter.splice(this.input.drag_index,1,this.input.drag_current.x);
+                }
+            }
+            dragEnd (evt) {
+                this.input.dragging = false;
+                this.input.drag_itemtype = "";
+                this.input.drag_index = 0;
+                this.getPos(evt);
+
+                this.root.removeEventListener(this.input.drag_events.move, this.dragMove)
+                this.root.removeEventListener(this.input.drag_events.stop, this.dragEnd)
+            }
+            getPos (evt) {
+                this.input.drag_current.target = evt.target;
+                this.input.touch ? this.getTouchPos(evt) : this.getMousePos(evt);
+                this.input.drag_end = this.input.drag_current
+            }
+            getMousePos (mouseEvent) {
+                this.input.drag_current.x = (mouseEvent.clientX);
+                this.input.drag_current.y = (mouseEvent.clientY);
+            }
+
+            registerComponent(componentName, componentFunction){
+                components.push({
+                        ComponentName: componentName,
+                        ComponentState: {
+
+                        },
+                        ComponentFunction: componentFunction});
+            }
+        }
+
+        let config = {
+                settings: {
+                    hasHeaders: true,
+                    showPopoutIcon: false,
+                    showCloseIcon: false        
+                },
+                content:[{
+                    type: 'column',
+                    content: [
+                        { 
+                        title: 'Template A', 
+                        type: 'component', 
+                        isClosable: false,
+                        componentName: 'template', 
+                        componentState: { templateId: 'A' }
+                        }, {
+                            type: 'row',
+                            content:[ 
+                                { title: 'Template B',
+                                type: 'component',
+                                isClosable: false,
+                                componentName: 'template',
+                                componentState: { templateId: 'B' }
+                                }, {
+                                    title: 'Template C',
+                                    type: 'component',
+                                    isClosable: false,
+                                    componentName: 'template',
+                                    componentState: { templateId: 'C'}
+                                }, {
+                                    title: 'Template D',
+                                    type: 'component',
+                                    isClosable: false,
+                                    componentName: 'template',
+                                    componentState: { templateId: 'D'}
+                                }
+                            ]
+                        }]
+                }]
+            } 
+
+    </script>
+</body>
+</html>

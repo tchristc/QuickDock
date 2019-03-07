@@ -1,0 +1,351 @@
+﻿@page "/quickdock"
+<style>
+        .qd_header {
+            overflow: visible;
+            position: relative;
+            z-index: 1;
+            height: 20px;
+        }
+
+        .qd_header ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .qd_header .qd_tabs {
+            position: absolute;
+        }
+
+        .qd_header .qd_tab {
+            position: absolute;
+        }
+
+        .qd_header [class^=qd_] {
+            box-sizing: content-box !important;
+        }
+
+        .qd_header .qd_tab {
+            font-family: Arial,sans-serif;
+            font-size: 12px;
+            color: #888888;
+            background: #fafafa;
+            margin-right: 2px;
+            padding-bottom: 0px;
+            padding-top: 2px;
+            border: 1px solid #cccccc;
+            border-bottom: none;
+        }
+
+        .qd_header .qd_tabs .qd_tab {
+            cursor: pointer;
+            float: left;
+            height: 12px;
+            margin-top: 1px;
+            padding: 2px 10px 4px;
+            padding-right: 25px;
+            position: relative;
+        }
+
+    .qd_drag_container .qd_tab_container .qd_header .qd_tabs .qd_tab {
+        cursor: move;
+    }
+
+    .qd_header .qd_tab .qd_title {
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .qd_header .qd_tab .qd_close_tab {
+        width: 11px;
+        height: 11px;
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAYAAADEUlfTAAAAIklEQVR4nGNgYGD4z4Ad/Mdg4ODDBXCZRFgCp5EEHQMXBwAQAgz0SVCcggAAAABJRU5ErkJggg==);
+        background-position: center center;
+        background-repeat: no-repeat;
+        right: 6px;
+        top: 4px;
+        opacity: 1;
+        position: absolute;
+        text-align: center;
+    }
+
+    .qd_header .qd_tab i.qd_left {
+        top: 0;
+        left: -2px;
+    }
+
+    .qd_header .qd_tab i.qd_right {
+        top: 0;
+        right: -2px;
+    }
+
+    .qd_tab.qd_active {
+        background: #e1e1e1;
+        color: #777777;
+    }
+
+    .qd_header .qd_tab.qd_active {
+        border-bottom: none;
+        box-shadow: 2px -2px 2px -2px rgba(0,0,0,0.2);
+        padding-bottom: 5px;
+    }
+
+    .qd_header .qd_controls {
+        position: absolute;
+        right: 3px;
+    }
+
+    .qd_header .qd_controls > li {
+        cursor: pointer;
+        float: left;
+        width: 18px;
+        height: 18px;
+        text-align: center;
+    }
+
+    .qd_controls > li {
+        position: relative;
+        background-position: center center;
+        background-repeat: no-repeat;
+        opacity: .4;
+        transition: opacity 300ms ease;
+    }
+
+    .qd_header .qd_controls {
+        position: absolute;
+        right: 3px;
+    }
+
+    .qd_controls .qd_popout {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAANUlEQVR4nI2QMQoAMAwCz5L/f9mOzZIaN0E9UDyZhaaQz6atgBHgambEJ5wBKoS0WaIvfT+6K2MIECN19MAAAAAASUVORK5CYII=);
+    }
+
+    .qd_controls .qd_maximise {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAIklEQVR4nGNkYGD4z0AAMBFSAAOETPpPlEmDUREjAxHhBABPvAQLFv3qngAAAABJRU5ErkJggg==);
+    }
+
+    .qd_controls .qd_close {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKUlEQVR4nGNgYGD4z4Af/Mdg4FKASwCnDf8JKSBoAtEmEXQTQd8RDCcA6+4Q8OvIgasAAAAASUVORK5CYII=);
+    }
+
+   .qd_content_container {
+        display: flex;
+        padding:3px;
+        width: 100%;
+    }
+
+    .qd_content {
+        background: #fafafa;
+        border: 1px solid #cccccc;
+        width: 100%;
+    }
+
+    .qd_item.qd_active {
+        display: flex;
+        width: 100%;
+    }
+
+    .qd_item.qd_inactive {
+        display: none;
+    }
+
+    .qd_proxy_dock {
+        display: grid;
+        grid-template-rows: auto auto auto auto;
+        grid-template-columns: auto auto auto auto;
+        grid-gap: 0;
+    }
+
+    .qd_proxy.qd_top {
+        grid-row: 1 / 2;
+        grid-column: 1 / 5;
+    }
+
+    .qd_proxy.qd_bottom {
+        grid-row: 4 / 5;
+        grid-column: 1 / 5;
+    }
+
+    .qd_proxy.qd_left {
+        grid-row: 1 / 5;
+        grid-column: 1 / 2;
+    }
+
+    .qd_proxy.qd_right {
+        grid-row: 1 / 5;
+        grid-column: 4 / 5;
+    }
+
+    .qd_proxy.qd_center {
+        grid-row: 2 / 4;
+        grid-column: 2 / 4;
+    }
+
+    .debug_border {
+        border: dashed black 1px;
+        background: transparent;
+    }
+
+    .qd_body {
+        display: flex;
+        /*width: 100%;*/
+        height: 500px;
+        /*position: relative;*/
+        background: #e1e1e1;
+        color: #777777;
+        border: 1px solid #cccccc;
+    }
+
+    .qd_item,
+    .qd_proxy_dock {
+        width: 100%;
+
+    }
+
+    .qd_proxy_dock {
+        z-index: 10;
+    }
+
+    .qd_proxy {
+        border: transparent;
+    }
+
+    .qd_proxy:hover {
+        border: dashed black 1px;
+    }
+
+    .qd_drag_container {
+        position: absolute;
+        z-index: 9;
+    }
+
+    .qd_main_container.qd_dragging {
+        cursor: move;
+    }
+
+    .qd_vertical_splitter {
+        margin-top: 4px;
+        margin-bottom: 4px;
+        cursor: ew-resize;
+        background: repeating-linear-gradient(0deg, #cccccc, #cccccc 2px, #e1e1e1 2px, #e1e1e1 4px);
+    }
+    
+    .qd_vertical_splitter:hover {
+        /*background:#e1e1e1;*/
+        background: #d1d1d1;
+    }
+
+    .qd_horizontal_splitter {
+        padding-top: 2px;
+        margin-left: 4px;
+        margin-right: 4px;
+        background: repeating-linear-gradient(45deg, #cccccc, #cccccc 2px, #e1e1e1 2px, #e1e1e1 4px);
+        cursor: ns-resize;
+    }
+
+    .qd_horizontal_splitter:hover{
+        /*background:#e1e1e1;*/
+        background: #d1d1d1
+    }
+
+    .qd_controls .qd_popout {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAANUlEQVR4nI2QMQoAMAwCz5L/f9mOzZIaN0E9UDyZhaaQz6atgBHgambEJ5wBKoS0WaIvfT+6K2MIECN19MAAAAAASUVORK5CYII=);
+    }
+            
+    .qd_controls .qd_maximise {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAIklEQVR4nGNkYGD4z0AAMBFSAAOETPpPlEmDUREjAxHhBABPvAQLFv3qngAAAABJRU5ErkJggg==);
+    }
+
+    .qd_controls .qd_close {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKUlEQVR4nGNgYGD4z4Af/Mdg4FKASwCnDf8JKSBoAtEmEXQTQd8RDCcA6+4Q8OvIgasAAAAASUVORK5CYII=);
+    }
+
+    .qd_column_container{
+        width: 100%;
+    }
+
+    .qd_row_container{
+        width: 100%;
+    }
+</style>
+<h1>Quick Dock</h1>
+<QuickDock Config="@Config"></QuickDock>
+@functions{
+    protected override void OnInit()
+    {
+        Config = new QuickDockConfig
+        {
+            Contents = new List<QuickDockContent>
+            {
+                new QuickDockContent
+                {
+                    Type = ContentType.Stack,
+                    Children = new List<QuickDockContent>
+                    {
+                        new QuickDockContent
+                        {
+                            Type = ContentType.Component,
+                            Title = "Hello",
+                            HtmlBody = "<h1>world</h1>",
+                            Active = true
+                        },
+                        new QuickDockContent
+                        {
+                            Type = ContentType.Component,
+                            Title = "Content",
+                            HtmlBody = "",
+                            Active = false
+                        },
+                        new QuickDockContent
+                        {
+                            Type = ContentType.Row,
+                            Title = "Rows",
+                            Children = new List<QuickDockContent>
+                            {
+                                new QuickDockContent
+                                {
+                                    Type = ContentType.Component,
+                                    Title = "",
+                                    HtmlBody = "stuff",
+                                    Active = true
+                                },
+                                new QuickDockContent
+                                {
+                                    Type = ContentType.Component,
+                                    Title = "",
+                                    HtmlBody = "stuff2",
+                                    Active = false
+                                }
+                            }
+                        },
+                        new QuickDockContent
+                        {
+                            Type = ContentType.Column,
+                            Title = "Column",
+                            Children = new List<QuickDockContent>
+                            {
+                                new QuickDockContent
+                                {
+                                    Type = ContentType.Component,
+                                    Title = "",
+                                    HtmlBody = "stuff",
+                                    Active = true
+                                },
+                                new QuickDockContent
+                                {
+                                    Type = ContentType.Component,
+                                    Title = "",
+                                    HtmlBody = "stuff2",
+                                    Active = false
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    QuickDockConfig Config { get; set; }
+}

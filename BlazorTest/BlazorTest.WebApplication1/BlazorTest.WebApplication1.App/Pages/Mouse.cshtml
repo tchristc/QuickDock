@@ -1,0 +1,26 @@
+﻿@page "/mouse"
+<style>
+    .input_canvas{
+        position: absolute; 
+        top: 0; 
+        left: 0; 
+        height: 100%; 
+        width: 100%
+    }
+</style>
+<div class="input_canvas" onmousemove="@(e=> MouseMove(e))"></div>
+<h1>Mouse</h1>
+
+<p>X: @x Y: @y</p>
+
+
+@functions {
+    long x = 0;
+    long y = 0;
+
+    void MouseMove(UIMouseEventArgs e)
+    {
+        x = e.ClientX;
+        y = e.ClientY;
+    }
+}

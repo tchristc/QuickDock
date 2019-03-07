@@ -1,0 +1,171 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\TomCC\\source\\repos\\BlazorTest\\BlazorTest.WebApplication1\\BlazorTest.WebApplication1.Server\\BlazorTest.WebApplication1.Server.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\TomCC\\source\\repos\\BlazorTest\\BlazorTest.WebApplication1\\BlazorTest.WebApplication1.App\\BlazorTest.WebApplication1.App.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\TomCC\\source\\repos\\BlazorTest\\BlazorTest.WebApplication1\\BlazorTest.WebApplication1.App\\BlazorTest.WebApplication1.App.csproj",
+        "projectName": "BlazorTest.WebApplication1.App",
+        "projectPath": "C:\\Users\\TomCC\\source\\repos\\BlazorTest\\BlazorTest.WebApplication1\\BlazorTest.WebApplication1.App\\BlazorTest.WebApplication1.App.csproj",
+        "packagesPath": "C:\\Users\\TomCC\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\TomCC\\source\\repos\\BlazorTest\\BlazorTest.WebApplication1\\BlazorTest.WebApplication1.App\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\TomCC\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://dotnet.myget.org/F/aspnetcore-dev/api/v3/index.json": {},
+          "https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json": {},
+          "https://dotnetfeed.blob.core.windows.net/dotnet-windowsdesktop/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "dependencies": {
+            "Blazor.Extensions.Logging": {
+              "target": "Package",
+              "version": "[0.1.10, )"
+            },
+            "Microsoft.AspNetCore.Blazor.Browser": {
+              "target": "Package",
+              "version": "[0.7.0, )"
+            },
+            "Microsoft.AspNetCore.Components.Browser": {
+              "target": "Package",
+              "version": "[3.0.0-preview-19075-0444, )"
+            },
+            "Microsoft.AspNetCore.Components.Build": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.0.0-preview-19075-0444, )"
+            },
+            "Microsoft.JSInterop": {
+              "target": "Package",
+              "version": "[3.0.0-preview.19074.2, )"
+            },
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      }
+    },
+    "C:\\Users\\TomCC\\source\\repos\\BlazorTest\\BlazorTest.WebApplication1\\BlazorTest.WebApplication1.Server\\BlazorTest.WebApplication1.Server.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\TomCC\\source\\repos\\BlazorTest\\BlazorTest.WebApplication1\\BlazorTest.WebApplication1.Server\\BlazorTest.WebApplication1.Server.csproj",
+        "projectName": "BlazorTest.WebApplication1.Server",
+        "projectPath": "C:\\Users\\TomCC\\source\\repos\\BlazorTest\\BlazorTest.WebApplication1\\BlazorTest.WebApplication1.Server\\BlazorTest.WebApplication1.Server.csproj",
+        "packagesPath": "C:\\Users\\TomCC\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\TomCC\\source\\repos\\BlazorTest\\BlazorTest.WebApplication1\\BlazorTest.WebApplication1.Server\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\TomCC\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://dotnet.myget.org/F/aspnetcore-dev/api/v3/index.json": {},
+          "https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json": {},
+          "https://dotnetfeed.blob.core.windows.net/dotnet-windowsdesktop/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.0": {
+            "projectReferences": {
+              "C:\\Users\\TomCC\\source\\repos\\BlazorTest\\BlazorTest.WebApplication1\\BlazorTest.WebApplication1.App\\BlazorTest.WebApplication1.App.csproj": {
+                "projectPath": "C:\\Users\\TomCC\\source\\repos\\BlazorTest\\BlazorTest.WebApplication1\\BlazorTest.WebApplication1.App\\BlazorTest.WebApplication1.App.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.0": {
+          "dependencies": {
+            "Blazor.Extensions.Logging": {
+              "target": "Package",
+              "version": "[0.1.10, )"
+            },
+            "Microsoft.AspNetCore.App": {
+              "include": "None",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.0.0-preview-19075-0444, )",
+              "autoReferenced": true
+            },
+            "Microsoft.AspNetCore.Components.Server": {
+              "target": "Package",
+              "version": "[3.0.0-preview-19075-0444, )"
+            },
+            "Microsoft.NETCore.App": {
+              "include": "None",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.0.0-preview-27324-5, )",
+              "autoReferenced": true
+            },
+            "Microsoft.NETCore.Platforms": {
+              "target": "Package",
+              "version": "[3.0.0-preview.19073.11, )",
+              "autoReferenced": true
+            },
+            "runtime.win-x64.Microsoft.NETCore.DotNetAppHost": {
+              "include": "None",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.0.0-preview-27324-5, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      }
+    }
+  }
+}

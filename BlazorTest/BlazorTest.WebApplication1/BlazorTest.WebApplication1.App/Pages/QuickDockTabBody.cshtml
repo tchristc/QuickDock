@@ -1,0 +1,8 @@
+﻿<div class="qd_item @(Content.Active?"qd_active":"qd_inactive")" data-qd-column="1">
+    <QuickDockContainer Content="@Content"></QuickDockContainer>
+</div>
+
+@functions {
+    [CascadingParameter] protected QuickDockConfig Config { get; set; }
+    [Parameter] protected QuickDockContent Content { get; set; }
+}

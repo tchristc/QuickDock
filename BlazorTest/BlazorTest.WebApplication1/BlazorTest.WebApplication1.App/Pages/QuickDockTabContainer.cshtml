@@ -1,0 +1,60 @@
+﻿<div class="qd_tab_container">
+    <div class="qd_header">
+        <ul class="qd_tabs">
+            @foreach (var content in Contents)
+            {
+                <QuickDockTabHeader Content="@content" OnTabClick="@OnTabClicked"></QuickDockTabHeader>
+            }
+        </ul>
+        <ul class="qd_controls">
+            <li class="qd_tabdropdown" title="additional tabs" style="display: none;"></li>
+            <li class="qd_popout" title="open in new window"></li>
+            <li class="qd_maximise" title="maximise"></li>
+            <li class="qd_close" title="close" style="display: list-item;"></li>
+        </ul>
+    </div>
+    <div class="qd_body">
+        @foreach (var content in Contents)
+        {
+            <QuickDockTabBody Content="@content"></QuickDockTabBody>
+        }
+
+        @*<div class="qd_proxy_dock">
+            <!-- <div class="qd_proxy" :class="{'qd_active': appData.proxy.active, appData.proxy.location}"></div> -->
+            <div class="qd_proxy qd_top"></div>
+            <div class="qd_proxy qd_left"></div>
+            <div class="qd_proxy qd_center"></div>
+            <div class="qd_proxy qd_bottom"></div>
+            <div class="qd_proxy qd_right"></div>
+        </div>*@
+    </div>
+</div>
+<!-- :class="{'qd_inactive': !input.dragging}" { left: input.x, top: input.y } :style="stylez"-->
+@*<div class="qd_drag_container" v-if="input.selected" :style="stylez">
+        <div class="qd_tab_container">
+            <div class="qd_header">
+                <ul class="qd_tabs">
+                    <li class="qd_tab qd_active" :class="{'qd_dragging': input.dragging}" :data-tab-id="input.selected.id">
+                        <i class="qd_left"></i><span class="qd_title">{{input.selected.name}}</span>
+                        <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
+                    </li>
+                </ul>
+            </div>
+            <div class="qd_body">
+                <div class="qd_item" data-qd-column="1" v-html="input.selected.body">
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+@functions {
+
+    [CascadingParameter] protected QuickDockConfig Config { get; set; }
+    [Parameter] protected List<QuickDockContent> Contents { get; set; }
+
+    private void OnTabClicked(QuickDockContent content)
+    {
+        Config.SetActive(content);
+        this.StateHasChanged();
+    }
+}

@@ -1,0 +1,20 @@
+﻿@if (Content.Type == ContentType.Component)
+{
+    <QuickDockContentContainer Content="@Content"></QuickDockContentContainer>
+}
+else if (Content.Type == ContentType.Row)
+{
+    <QuickDockRowContainer Contents="@Content.Children"></QuickDockRowContainer>
+}
+else if (Content.Type == ContentType.Column)
+{
+    <QuickDockColumnContainer Contents="@Content.Children"></QuickDockColumnContainer>
+}
+else if (Content.Type == ContentType.Stack)
+{
+    <QuickDockTabContainer Contents="@Content.Children"></QuickDockTabContainer>
+}
+@functions {
+    [CascadingParameter] protected QuickDockConfig Config { get; set; }
+    [Parameter] protected QuickDockContent Content { get; set; }
+}

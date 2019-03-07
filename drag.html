@@ -34,20 +34,28 @@
                 color: #888888;
                 background: #fafafa;
                 margin-right: 2px;
-                padding-bottom: 2px;
+                padding-bottom: 0px;
                 padding-top: 2px;
                 border: 1px solid #cccccc;
                 border-bottom: none;
             }
             
-            .qd_header .qd_tab {
+            .qd_header .qd_tabs .qd_tab {
                 cursor: pointer;
                 float: left;
-                height: 14px;
+                height: 12px;
                 margin-top: 1px;
-                padding: 0 10px 4px;
+                padding: 2px 10px 4px;
                 padding-right: 25px;
                 position: relative;
+            }
+            /* :not(.qd_dragging) */
+            /* .qd_container .qd_tab_container .qd_header .qd_tabs .qd_tab {
+                cursor: pointer;
+            } */
+
+            .qd_drag_container .qd_tab_container .qd_header .qd_tabs .qd_tab {
+                cursor: move;
             }
 
             .qd_header .qd_tab .qd_title {
@@ -218,9 +226,13 @@
                 z-index: 9;
             }
 
+            .qd_container.qd_dragging{
+                cursor: move;
+            }
+            
         </style>
         <script type="text/x-template" id="tab-container-template">
-            <div class="qd_container" ref="container" @click="click" @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp">
+            <div class="qd_container" :class="{'qd_dragging': input.dragging}" ref="container" @click="click" @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp">
                 <div class="qd_tab_container">
                     <div class="qd_header">
                         <ul class="qd_tabs">
@@ -248,7 +260,7 @@
                     <div class="qd_tab_container">
                         <div class="qd_header">
                             <ul class="qd_tabs">
-                                <li class="qd_tab qd_active" :data-tab-id="input.selected.id" >
+                                <li class="qd_tab qd_active" :class="{'qd_dragging': input.dragging}" :data-tab-id="input.selected.id" >
                                     <i class="qd_left"></i><span class="qd_title">{{input.selected.name}}</span>
                                     <div class="qd_close_tab" style="display: block;"></div><i class="qd_right"></i>
                                 </li>
